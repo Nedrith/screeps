@@ -23,8 +23,11 @@ run: function (creep){
     creep.moveTo(creep.pos.findClosestByRange(exit));
   }
   //transfer
-  else if(creep.memory.working == true){
-    var constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+  else if(creep.memory.working == true)
+  {
+  var constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES,
+  {filter: (s) => s.structureType == STRUCTURE_EXTENSION});
+
     if (constructionSite != undefined)
     {
       if (creep.build(constructionSite) == ERR_NOT_IN_RANGE){
@@ -34,7 +37,16 @@ run: function (creep){
     }
     else
     {
-      roleRepairer.run(creep);
+      constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+      if (constructionSite != undefined)
+      {
+        if (creep.build(constructionSite) == ERR_NOT_IN_RANGE){
+          creep.moveTo(constructionSite, {maxRooms: 0});
+
+        }
+      }
+      else
+        roleRepairer.run(creep);
     }
   }
   else{
