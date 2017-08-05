@@ -199,10 +199,10 @@ function (debug)
   }
   if(name == undefined && this.memory.roleCount['harvester'] < this.memory.minimumNumberOfHarvesters)
   {
-    name = this.createCustomCreep(800/2, 'harvester');
+    name = this.createCustomCreep(energyMax, 'harvester');
   }
   //backup harvester spawn
-  else if((this.memory.roleCount['harvester'] < 4  && this.memory.roleCount['miner'] < 1) && energyMax/2 > this.room.energyAvailable)
+  else if((this.memory.roleCount['harvester'] < this.memory.emergancyHarvesterCount  && this.memory.roleCount['miner'] < 1) && energyMax/2 > this.room.energyAvailable)
   {
     name = this.createCustomCreep(this.room.energyAvailable,'harvester')
   }
@@ -217,16 +217,16 @@ function (debug)
     name = this.createUpgradeContainerCreep('upgradercon');
   }
   else if(this.memory.roleCount['upgrader'] < this.memory.minimumNumberOfUpgraders){
-    name = this.createCustomCreep(energy,'upgrader');
+    name = this.createCustomCreep(energyMax,'upgrader');
   }
   else if(this.memory.roleCount['repairer'] < this.memory.minimumNumberOfRepairers){
-    name = this.createCustomCreep(energy, 'repairer');
+    name = this.createCustomCreep(energyMax, 'repairer');
   }
   else if(this.memory.roleCount['builder'] < this.memory.minimumNumberOfBuilders){
-    name = this.createCustomCreep(energy, 'builder');
+    name = this.createCustomCreep(energyMax, 'builder');
   }
   else if(this.memory.roleCount['wallrepaier'] < this.memory.minimumNumberOfWallRepairers){
-    name = this.createCustomCreep(energy, 'wallrepairer');
+    name = this.createCustomCreep(energyMax, 'wallrepairer');
   }
   //if all else fails spawn a longDistanceHarvester as long as we need one
   else if(this.memory.sourceIDList != undefined || this.memory.sourceIDList != null) {
