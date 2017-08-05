@@ -27,7 +27,7 @@ var tower = Game.getObjectById('6ab0baee1cc2e66');
   if(creep.memory.working == true){
     var structure = creep.pos.findClosestByPath(FIND_STRUCTURES,
     {filter: (s) => s.hits < s.hitsMax && s.structureType != STRUCTURE_WALL
-      && s.structureType != STRUCTURE_RAMPART || (s.structureType == STRUCTURE_CONTAINER && s.hits < 50000)});
+      && s.structureType != STRUCTURE_RAMPART || (s.structureType == STRUCTURE_CONTAINER && s.hits < 50000) });
     if (structure != undefined)
     {
       if (creep.repair(structure) == ERR_NOT_IN_RANGE){

@@ -70,10 +70,10 @@ function (useStorage, useContainer, useSource)
       {
         //if ( Math.abs(this.pos.x - target.pos.x) > 2 || Math.abs(this.pos.y - target.pos.y > 2))
         //{
-      //    this.moveTo(target);
-      //  }
-      //attempt to fill up energy if out of range move closer
-    target= Game.getObjectById(this.memory.target);
+        //    this.moveTo(target);
+        //  }
+        //attempt to fill up energy if out of range move closer
+        target= Game.getObjectById(this.memory.target);
         if (this.withdraw( target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
         {
 

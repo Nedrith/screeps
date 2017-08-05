@@ -7,6 +7,3 @@
  * mod.thing == 'a thing'; // true
  */
 //require('prototype.roles')
-module.exports = {
-
-};
