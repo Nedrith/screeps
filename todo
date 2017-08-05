@@ -1,0 +1,15 @@
+IMPROVE SPAWN CODE
+  reduce time spent checking to spawn
+//  store containers in room memory
+  color in spawn code
+IMPROVE CREEP code
+//  store containers in room memory
+  cache paths
+  get all creeps to use getEnergy
+
+IMPROVE MEMORY STORAGE
+  store spawn data in room memory instead of spawn
+
+NEW UNITS
+  Defensive units
+  Healing code
