@@ -1,6 +1,7 @@
 //sets defaults for room memory must be run when room is taken control of
 Room.prototype.defaultRoomVariables = function(){
   this.memory.sourceContainers={}
+  this.memory.controllerContainer={}
 }
 //updates containers around sources
 Room.prototype.updateSourceContainers = function()
@@ -49,7 +50,7 @@ Room.prototype.updateControllerContainer = function(){
         //if after everything the controllerContainer is invalid delete it
         if(Game.getObjectById(this.memory.controllerContainer) == undefined)
         {
-          delete this.memory.controllerContainer[source.id];
+          delete this.memory.controllerContainer;
         }
       }
   }
