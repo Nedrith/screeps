@@ -197,10 +197,14 @@ function (debug)
       }
     }
   }
-  //if no miner was spawned see if we need a Harvester
-  if(name == undefined && this.memory.roleCount['harvester'] < this.memory.minimumNumberOfHarvesters  || (this.memory.roleCount['harvester'] < 4  && this.memory.roleCount['miner'] < 1))
+  if(name == undefined && this.memory.roleCount['harvester'] < this.memory.minimumNumberOfHarvesters)
   {
     name = this.createCustomCreep(800/2, 'harvester');
+  }
+  //backup harvester spawn
+  else if((this.memory.roleCount['harvester'] < 4  && this.memory.roleCount['miner'] < 1) && energyMax/2 > this.room.energyAvailable)
+  {
+    name = this.createCustomCreep(this.room.energyAvailable,'harvester')
   }
   else if(this.memory.roleCount['mover'] < this.memory.minimumNumberOfMovers  && name == undefined){
     name = this.createMoverCreep(5,3,'mover');
