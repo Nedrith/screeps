@@ -17,6 +17,8 @@ spawn.memory.minimumNumberOfUpgradercons=0;
 spawn.memory.minimumNumberOfBuilders = 0;
 spawn.memory.minimumNumberOfWallRepairers = 0;
 spawn.memory.minimumNumberOfRepairers = 0;
-spawn.memory.additionalMovers = 0;
+spawn.memory.minimumNumberOfMovers = 0;
+spawn.memory.minimumNumberOfFillers = 0;
+spawn.memory.emergancyHarvesterCount = 4;
 }
 };
