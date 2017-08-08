@@ -8,6 +8,7 @@
  */
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleHarvester = require('role.harvester');
 module.exports = {
 run: function (creep){
 //check for switching state
@@ -30,19 +31,26 @@ run: function (creep){
     if(creep.room.name == creep.memory.home)
     {
       var structure = creep.room.storage;
-      if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-        creep.moveTo(structure),{maxRooms: 1};
-
-      }
-      if (structure == undefined)
+      if(structure == undefined)
       {
-        roleUpgrader.run(creep);
+        var structure = creep.room.memory.controllerContainer;
+      }
+      if(structure != undefined)
+      {
+        if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+        creep.moveTo(structure,{maxRooms: 0,visualizePathStyle: {} });
+
+        }
+      }
+      else
+      {
+        roleHarvester.run(creep);
       }
     }
     else
     {
       var exit = creep.room.findExitTo(creep.memory.home)
-      creep.moveTo(creep.pos.findClosestByRange(exit));
+      creep.moveTo(creep.pos.findClosestByRange(exit), {maxRooms:1});
     }
   }
   else{
@@ -50,9 +58,11 @@ run: function (creep){
       if(creep.room.name == creep.memory.target){
         var source = Game.getObjectById(creep.memory.sourcetarget)
         var code = creep.harvest(source);
+        if(creep.name == 'Gabriella')
+        console.log('here')
         if(code == ERR_NOT_IN_RANGE || code == ERR_NOT_ENOUGH_RESOURCES)
         {
-          creep.moveTo(source),{maxRooms: 1};
+          creep.moveTo(source,{maxRooms: 0 , visualizePathStyle: {} });
         }
         else
         {
@@ -63,11 +73,20 @@ run: function (creep){
       else
       {
         var exit = creep.room.findExitTo(creep.memory.target)
-        creep.moveTo(creep.pos.findClosestByRange(exit));
+        creep.moveTo(creep.pos.findClosestByRange(exit), {maxRooms: 1});
       }
 }
-if(creep.pos.x*creep.pos.y == 0 || creep.pos.x == 49 || creep.pos.y == 49)
-creep.moveTo(new RoomPosition(25,25,creep.room.name));
+//this prevents the back and forthness.  If a creep is found at the
+//edge of a room this overrides control until a safe distance is reached
+if(creep.memory.controlOverride && (creep.pos.x*creep.pos.y == 0 || creep.pos.x > 49 || creep.pos.y == 49))
+{
+creep.memory.controlOverride = true;
+console.log('yes' + creep.memory.controlOverride)
+creep.moveTo(new RoomPosition(25,25,creep.room.name), {maxRooms:0, visualizePathStyle: {} });
+if(creep.pos.x >3 && creep.pos.y > 3 && creep.pos.x < 47 && creep.pos.y <47)
+{
+  creep.memory.controlOverride = false;
 }
-
-};
+}
+}
+}

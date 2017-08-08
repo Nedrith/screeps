@@ -24,6 +24,7 @@ run: function (creep){
     }
   }
   else{
+    /*
     if(creep.memory.controllerContianer != undefined || creep.memory.controllerContainer == null)
    {
    let controller = creep.room.controller;
@@ -35,13 +36,22 @@ run: function (creep){
      }
    }
  }
-   else
-   {
+ */
+
      let structure = Game.getObjectById(creep.memory.controllerContainer);
-     if (creep.withdraw(structure, RESOURCE_ENERGY, creep.carryCapacity - creep.carry) == ERR_NOT_IN_RANGE){
+     if(structure != undefined)
+     {
+      if (creep.withdraw(structure, RESOURCE_ENERGY, creep.carryCapacity - creep.carry) == ERR_NOT_IN_RANGE){
        creep.moveTo(structure);
-   }
+      }
+    }
+    else if (creep.room.storage != undefined)
+    {
+
+      if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY, creep.carryCapacity - creep.carry) == ERR_NOT_IN_RANGE){
+       creep.moveTo(creep.room.storage);
+      }
+    }
  }
-}
 }
 };

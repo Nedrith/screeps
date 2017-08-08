@@ -21,9 +21,26 @@ run: function (creep)
   //transfer
   if(creep.memory.working == true)
   {
-    var target = creep.room.storage;
-    if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE  || Math.abs(target.pos.x - creep.pos.x) > 2 || Math.abs(target.pos.y - creep.pos.y) > 2){
-      creep.moveTo(target);
+    //structure disregards storages along with towers that aren't missing atleast 400 energy
+    //this prevents a tower from constantly getting filled while repairing
+    var structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+      filter: (s) => (s.energy < s.energyCapacity  &&
+        !(s.structureType == STRUCTURE_STORAGE  || s.structureType == STRUCTURE_TOWER))
+      || (s.structureType == STRUCTURE_TOWER && s.energy <s.energyCapacity - 400)
+    });
+    creep.memory.test = structure;
+    if(structure != null && structure != undefined)
+    {
+    if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE  || Math.abs(structure.pos.x - creep.pos.x) > 2 || Math.abs(structure.pos.y - creep.pos.y) > 2){
+      creep.moveTo(structure);
+
+    }
+    }
+    else if(creep.room.storage != undefined){
+      var target = creep.room.storage;
+      if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE  || Math.abs(target.pos.x - creep.pos.x) > 2 || Math.abs(target.pos.y - creep.pos.y) > 2){
+        creep.moveTo(target);
+      }
     }
   }
   else{

@@ -1,19 +1,9 @@
 require('prototype.creep');
 require('prototype.spawn');
 require('prototype.room');
+require('prototype.tower')
 require('spawning');
 //depreciated?
-var filler = require('role.filler');
-var harvester = require('role.harvester');
-var upgrader = require('role.upgrader');
-var upgradercon = require('role.upgradercon')
-var builder = require('role.builder');
-var repairer = require('role.repairer');
-var wallrepairer=require('role.wallrepairer');
-var longDistanceHarvester=require('role.longDistanceHarvester')
-var miner = require('role.miner');
-var mover = require('role.mover');
-var claimer = require('role.claimer');
 const profiler = require('screeps-profiler');
 profiler.enable();
 //depreciated?
@@ -42,8 +32,17 @@ module.exports.loop = function() {
       delete Memory.creeps[name];
     }
   }
-  /*
-  var tower = Game.getObjectById('2fa9c063e5baba3');
+  //get stored towers
+  var towers = Game.rooms.W7N3.memory.towers;
+  for (var towerID of towers)
+  {
+    //type tower
+
+    var tower = Game.getObjectById(towerID);
+    tower.run();
+  }
+
+  var tower = Game.getObjectById('6e51506c4accfa6');
 if(tower) {
     var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 
@@ -51,7 +50,8 @@ if(tower) {
         tower.attack(closestHostile);
     }
 }
-var tower = Game.getObjectById('6ab0baee1cc2e66');
+
+var tower = Game.getObjectById('01a6efc6a13f3c3');
 if(tower) {
   var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 
@@ -59,7 +59,7 @@ if(tower) {
       tower.attack(closestHostile);
   }
 }
-*/
+
 
 
   //console.log(debug)
@@ -76,7 +76,7 @@ if(tower) {
 
   }
   //print out table header when needed
-  if(debug) console.log('spawnN    ha mi mo up re bu wr fi ldh' )
+  if(debug) console.log('spawnN   |ha|mi|mo|up|re|bu|wr|fi|ld|' )
 
   for(let n in Game.spawns)
   {

@@ -18,7 +18,7 @@ var roles = {
   miner : require('role.miner'),
   mover : require('role.mover'),
   filler : require('role.filler'),
-
+  reserver : require('role.reserver')
 }
 //module.exports = {
 Creep.prototype.runRole =

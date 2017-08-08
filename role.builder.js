@@ -6,7 +6,7 @@
  * var mod = require('role.harvester');
  * mod.thing == 'a thing'; // true
  */
-var roleRepairer = require('role.repairer');
+var roleUpgrader = require('role.upgrader');
 module.exports = {
 run: function (creep){
 //check for switching state
@@ -46,7 +46,7 @@ run: function (creep){
         }
       }
       else
-        roleRepairer.run(creep);
+        roleUpgrader.run(creep);
     }
   }
   else{

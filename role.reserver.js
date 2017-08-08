@@ -7,13 +7,12 @@
  * mod.thing == 'a thing'; // true
  */
 
-module.exports = {
   module.exports = {
   run: function (creep){
         //if  not in target room
         if(creep.room.name == creep.memory.target){
-          //claim controller
-          if(creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE)
+          //reserve controller
+          if(creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE)
           {
             //move to controller if not in range
             creep.moveTo(creep.room.controller),{maxRooms: 1};
@@ -28,7 +27,5 @@ module.exports = {
 
 
   }
-
-};
 
 };

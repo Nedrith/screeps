@@ -2,6 +2,7 @@
 Room.prototype.defaultRoomVariables = function(){
   this.memory.sourceContainers={}
   this.memory.controllerContainer={}
+  this.memory.sourceIDList={}
 }
 //updates containers around sources
 Room.prototype.updateSourceContainers = function()

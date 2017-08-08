@@ -7,7 +7,7 @@
  * mod.thing == 'a thing'; // true
  */
  var roleNames = ['harvester','miner','mover','upgradercon','repairer',
- 'builder','wallrepairer','filler','longDistanceHarvester'];
+ 'builder','wallrepairer','filler','longDistanceHarvester','upgrader'];
 //module.exports = function() {0
   StructureSpawn.prototype.createCustomCreep =
     function(energy, roleName) {
@@ -47,23 +47,22 @@
       return this.createCreep(body, undefined, { harvestTime: 0, timeSpentNotWorking: 0,timeSpentWorking: 0, role: roleName, working: false, target: target, home: home, sourcetarget: sourcetarget});
     };
     StructureSpawn.prototype.createLongDistanceHarvester =
-    function(energyMax,roleName,target,home,sourcetarget) {
+    function(energyMax,workP,roleName,target,home,sourcetarget) {
       //var numberOfParts = Math.floor(energy / 200);
       var body = [];
-      for (let i = 0; i < 2; i++){
+      for (let i = 0; i < workP; i++){
         body.push(WORK);
 
       }
-      for (let i = 0; i < Math.floor((energyMax-200)/100); i++){
+      for (let i = 0; i < Math.floor((energyMax/100)) - workP; i++){
         body.push(CARRY);
 
 
       }
-      for (let i = 0; i < Math.floor((energyMax-200)/100); i++){
+      for (let i = 0; i < Math.floor((energyMax/100)) -workP; i++){
         body.push(MOVE);
 
       }
-
       return this.createCreep(body, undefined, { harvestTime: 0, timeSpentNotWorking: 0,timeSpentWorking: 0, role: roleName, working: false, target: target, home: home, sourcetarget: sourcetarget});
     };
     StructureSpawn.prototype.createMiner =
@@ -92,7 +91,7 @@
         body.push(MOVE);
 
       }
-      return this.createCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], undefined, { role: roleName, working: false});
+      return this.createCreep(body, undefined, { role: roleName, working: false});
     };
     StructureSpawn.prototype.createUpgradeContainerCreep =
     function(roleName) {
@@ -100,9 +99,19 @@
       return this.createCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE], undefined, { role: roleName, working: false});
     };
     StructureSpawn.prototype.createClaimerCreep =
-    function(target) {
+    function(parts, target, role) {
+      var body = []
+      for (let i = 0; i < parts; i++)
+      {
+        body.push(CLAIM);
 
-      return this.createCreep([CLAIM,MOVE], undefined, { role: 'claimer', target:target, working: false});
+      }
+      for (let i = 0; i < parts; i++){
+        body.push(MOVE);
+
+      }
+
+      return this.createCreep(body, undefined, { role: role, target:target, working: false});
     };
 //};
 
@@ -119,7 +128,7 @@ function (debug)
   if(this.memory.roleRefresh == undefined || this.memory.roleRefresh < 1 || debug)
   {
     roleRefresh = true
-    this.memory.roleRefresh = 10
+    this.memory.roleRefresh = 1
   }
   else
   {
@@ -150,7 +159,7 @@ function (debug)
   else if(debug)
   {
     //print array stores the entire table column of stuff to print starting with spawn name
-    let printArray = this.name + '    '
+    let printArray = this.name + '   |'
     for(let role of roleNames)
     {
 
@@ -164,7 +173,7 @@ function (debug)
       }
       //add proper data to printArray
       printArray = printArray + this.memory.roleCount[role]
-      printArray = printArray + '  '
+      printArray = printArray + ' |'
     }
     console.log(printArray)
   }
@@ -175,25 +184,27 @@ function (debug)
   //energy in the room available
   var energyMax = this.room.energyCapacityAvailable;
   //miner code check every source that has a container for a miner
+  if(this.memory.miner != false){
   for(let x in sources)
-  {
-    //name of creep Spawned
-
-
-    //current source
-    var source = sources[x];
-    //if the spawn's room memory says the source has a container then see if it has a miner
-    if(this.room.memory.sourceContainers[source.id] != undefined)
     {
+      //name of creep Spawned
 
-      if ((_.sum(Game.creeps, (c) => c.memory.sourcetarget == source.id)) < 1)
+
+      //current source
+      var source = sources[x];
+      //if the spawn's room memory says the source has a container then see if it has a miner
+      if(this.room.memory.sourceContainers[source.id] != undefined)
       {
-        //if there's no miner then create one
-        name = this.createMiner(source.id);
 
-        //console.log('miner');
-        //console.log(source.id);
-        //console.log(_.sum(Game.creeps, (c) => c.memory.sourcetarget == source.id))
+        if ((_.sum(Game.creeps, (c) => c.memory.sourcetarget == source.id)) < 1)
+        {
+          //if there's no miner then create one
+          name = this.createMiner(source.id);
+
+          //console.log('miner');
+          //console.log(source.id);
+          //console.log(_.sum(Game.creeps, (c) => c.memory.sourcetarget == source.id))
+        }
       }
     }
   }
@@ -207,11 +218,19 @@ function (debug)
     name = this.createCustomCreep(this.room.energyAvailable,'harvester')
   }
   else if(this.memory.roleCount['mover'] < this.memory.minimumNumberOfMovers  && name == undefined){
-    name = this.createMoverCreep(5,3,'mover');
+    name = this.createMoverCreep(8,3,'mover');
   }
   else if(this.memory.roleCount['filler'] < this.memory.minimumNumberOfFillers)
   {
     name = this.createMoverCreep(14,7,'filler');
+  }
+  else if(Game.flags.claimRoom != undefined)
+  {
+    name = this.createClaimerCreep(Game.flags.claimRoom.pos.roomName);
+    if(name != undefined)
+    {
+      delete Game.flags.claimRoom.remove()
+    }
   }
   else if(this.memory.roleCount['upgradercon'] < this.memory.minimumNumberOfUpgradercons){
     name = this.createUpgradeContainerCreep('upgradercon');
@@ -229,25 +248,52 @@ function (debug)
     name = this.createCustomCreep(energyMax, 'wallrepairer');
   }
   //if all else fails spawn a longDistanceHarvester as long as we need one
-  else if(this.memory.sourceIDList != undefined || this.memory.sourceIDList != null) {
+  else if(this.room.memory.sourceIDList != undefined || this.room.memory.sourceIDList != null) {
 
-//get a list of longDistanceHarvester targets
-var longRangeTargets = this.memory.sourceIDList
-//for every source targeted see if we need a harvester
-for(let x in longRangeTargets){
-  var target = longRangeTargets[x]
-  //is there not enough harvesters on that source?
-  if(_.sum(Game.creeps, (c) => c.memory.sourcetarget == target.sourceID) < 1)
-  {
-    name = spawn.createLongDistanceHarvester(energyMax, 'longDistanceHarvester',target.roomLoc,spawn.room.name,
-    target.sourceID);
-    break;
+    //get a list of longDistanceHarvester targets
+    var longRangeTargets = this.room.memory.sourceIDList
+    //for every source targeted see if we need a harvester
+    for(let x in longRangeTargets){
+
+      var target = longRangeTargets[x]
+      //is there not enough harvesters on that source?
+      if(_.sum(Game.creeps, (c) => c.memory.sourcetarget == target.sourceID) < 1)
+      {
+        if(energyMax > 1000)
+        {
+        name = this.createLongDistanceHarvester(energyMax, 3, 'longDistanceHarvester',target.roomLoc,this.room.name,
+        target.sourceID);
+        }
+        else
+        {
+          name = this.createLongDistanceHarvester(energyMax, 2, 'longDistanceHarvester',target.roomLoc,this.room.name,
+          target.sourceID);
+        }
+
+        break;
+      }
+    }
   }
-}
+  if(name == undefined  && ((this.room.memory.reserveRoom != undefined || this.room.memory.reserveRoom != null) && energyMax > 1100)){
+  var reserveTargets = this.room.memory.reserveRoom
+  //for every source targeted see if we need a harvester
+  for(let x in reserveTargets){
 
+    var target = reserveTargets[x]
+    //console.log(target)
+    //is there not enough harvesters on that source?
+    if(_.sum(Game.creeps, (c) => c.memory.target == target  && c.memory.role == 'reserver') < 1)
+    {
+      //console.log('here')
+      name = this.createClaimerCreep(2,target,'reserver');
+      break;
+    }
+  }
 }
 //print out the name of the spawned creep
 if(!(name < 0) && name != undefined){
-console.log("Spawned new: " + name +'(' + Game.creeps[name].memory.role + ') at' + this.name );
+  if(this.memory.roleCount[Game.creeps[name].memory.role] != 'longDistanceHarvester')
+    this.memory.roleCount[Game.creeps[name].memory.role] = this.memory.roleCount[Game.creeps[name].memory.role] + 1
+  console.log("Spawned new: " + name +'(' + Game.creeps[name].memory.role + ') at' + this.name );
 }
 }

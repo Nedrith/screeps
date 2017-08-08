@@ -6,9 +6,8 @@
  * var mod = require('role.harvester');
  * mod.thing == 'a thing'; // true
  */
-
 module.exports = {
-run: function (spawntarget){
+spawn: function (spawntarget){
 //check for switching state
 var spawn = Game.spawns[spawntarget];
 spawn.memory.minimumNumberOfHarvesters = 0;
@@ -20,5 +19,16 @@ spawn.memory.minimumNumberOfRepairers = 0;
 spawn.memory.minimumNumberOfMovers = 0;
 spawn.memory.minimumNumberOfFillers = 0;
 spawn.memory.emergancyHarvesterCount = 4;
+spawn.memory.roleCount = []
+}
+};
+module.exports = {
+
+targetRoom: function (spawntarget){
+//check for switching state
+var spawn = Game.rooms[spawntarget];
+spawn.memory.sourceContainers = {}
+spawn.memory.controllerContainer={}
+spawn.memory.sourceIDList={}
 }
 };
