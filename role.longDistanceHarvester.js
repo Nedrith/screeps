@@ -35,7 +35,8 @@ run: function (creep){
       {
         var structure = creep.room.memory.controllerContainer;
       }
-      if(structure != undefined)
+
+      if(structure != undefined || structure != null)
       {
         if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
         creep.moveTo(structure,{maxRooms: 0,visualizePathStyle: {} });
@@ -54,34 +55,37 @@ run: function (creep){
     }
   }
   else{
-      creep.memory.timeSpentNotWorking++;
-      if(creep.room.name == creep.memory.target){
-        var source = Game.getObjectById(creep.memory.sourcetarget)
-        var code = creep.harvest(source);
-        if(creep.name == 'Gabriella')
-        console.log('here')
-        if(code == ERR_NOT_IN_RANGE || code == ERR_NOT_ENOUGH_RESOURCES)
-        {
-          creep.moveTo(source,{maxRooms: 0 , visualizePathStyle: {} });
-        }
-        else
-        {
-          creep.memory.harvestTime++;
-        }
 
+
+      creep.memory.timeSpentNotWorking++;
+      //normal harvesting
+        if(creep.room.name == creep.memory.target){
+            if(creep.memory.containerHarvesting == false  || creep.memory.containerHarvesting == undefined)
+            {
+            var source = Game.getObjectById(creep.memory.sourcetarget)
+            var code = creep.harvest(source);
+            if(creep.name == 'Gabriella')
+            console.log('here')
+            if(code == ERR_NOT_IN_RANGE || code == ERR_NOT_ENOUGH_RESOURCES)
+            {
+              creep.moveTo(source,{maxRooms: 0 , visualizePathStyle: {} });
+            }
+            else
+            {
+              creep.memory.harvestTime++;
+            }
+          }
+        //container harvesting
+        //build containers if no container is found
+
+        }
       }
-      else
-      {
-        var exit = creep.room.findExitTo(creep.memory.target)
-        creep.moveTo(creep.pos.findClosestByRange(exit), {maxRooms: 1});
-      }
-}
 //this prevents the back and forthness.  If a creep is found at the
 //edge of a room this overrides control until a safe distance is reached
-if(creep.memory.controlOverride && (creep.pos.x*creep.pos.y == 0 || creep.pos.x > 49 || creep.pos.y == 49))
+
+if(creep.memory.controlOverride || creep.pos.x*creep.pos.y == 0 || creep.pos.x == 49 || creep.pos.y == 49)
 {
 creep.memory.controlOverride = true;
-console.log('yes' + creep.memory.controlOverride)
 creep.moveTo(new RoomPosition(25,25,creep.room.name), {maxRooms:0, visualizePathStyle: {} });
 if(creep.pos.x >3 && creep.pos.y > 3 && creep.pos.x < 47 && creep.pos.y <47)
 {
@@ -89,4 +93,29 @@ if(creep.pos.x >3 && creep.pos.y > 3 && creep.pos.x < 47 && creep.pos.y <47)
 }
 }
 }
+}
+
+containerMine : function(){
+  if(creep.memory.sourceContainer != undefined)
+  {
+
+      var structuresNearSource = this.lookForAtArea(LOOK_CONSTRUCTION_SITES,
+        creep.memory.sourcetarget.pos.y-1,creep.memory.sourcetarget.pos.x-1,
+        creep.memory.sourcetarget.pos.y+1,creep.memory.sourcetarget.pos.x+1,true);
+      if(structuresNearSource != undefined)
+      {
+        if(creep.carry <= creep.carryCapacity  && )
+        {
+
+        }
+      }
+      //find container
+      //repair container
+      //harvest
+  }
+  else
+  {
+    var exit = creep.room.findExitTo(creep.memory.target)
+    creep.moveTo(creep.pos.findClosestByRange(exit), {maxRooms: 1});
+  }
 }

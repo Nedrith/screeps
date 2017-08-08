@@ -28,4 +28,8 @@ function (){
 
     }
   }
+  var creeptoheal = this.room.find(FIND_MY_CREEPS , {filter : (c) => c.hits < c.hitsMax})
+  this.room.memory.creeptoheal = creeptoheal
+  if(creeptoheal != undefined)
+    this.heal(creeptoheal[0])
 }
